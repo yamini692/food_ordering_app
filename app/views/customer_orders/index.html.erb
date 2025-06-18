@@ -1,0 +1,91 @@
+<div class="container d-flex flex-column align-items-center mt-5">
+  <h2 class="mb-4">Your Orders</h2>
+
+  <% if @orders.empty? %>
+    <div class="alert alert-info text-center w-100" role="alert">
+      You have not placed any orders yet.
+    </div>
+  <% end %>
+
+  <% @orders.each do |order| %>
+    <div class="card mb-4 shadow-sm w-100" style="max-width: 600px;">
+      <div class="card-body">
+        <% order.order_items.each do |item| %>
+          <h5 class="card-title"><%= item.menu_item.name %> - ₹<%= item.menu_item.price %></h5>
+
+          <% status_text = order.status.downcase == "placed" ? "Pending" : order.status.capitalize %>
+          <p class="card-text">
+            <strong>Status:</strong>
+            <span class="badge bg-<%= status_text == "Delivered" ? "success" : "warning" %>">
+              <%= status_text %>
+            </span>
+          </p>
+
+          <!-- Menu Item Review -->
+          <% if order.status == "delivered" && item.menu_item.reviews.where(user: current_user).empty? %>
+            <div class="mb-3">
+              <%= form_with model: Review.new, url: reviews_path, method: :post, local: true do |f| %>
+                <%= f.hidden_field :reviewable_type, value: "MenuItem" %>
+                <%= f.hidden_field :reviewable_id, value: item.menu_item.id %>
+                <%= f.hidden_field :user_id, value: current_user.id %>
+
+                <div class="mb-2">
+                  <%= f.text_area :content, placeholder: "Write your review for the dish...", class: "form-control" %>
+                </div>
+
+                <div class="mb-2">
+                  <%= f.number_field :rating, in: 1..5, placeholder: "Rating", class: "form-control w-25" %>
+                </div>
+
+                <%= f.submit "Submit Dish Review", class: "btn btn-success" %>
+              <% end %>
+            </div>
+          <% else %>
+            <% review = item.menu_item.reviews.find_by(user: current_user) %>
+            <% if review %>
+              <p class="mt-2"><strong>Your Dish Review:</strong> <%= review.content %> (Rating: <%= review.rating %>/5)</p>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <!-- Restaurant Review -->
+        <% if order.status == "delivered" %>
+          <% if Review.where(reviewable_type: "Restaurant", reviewable_id: 1, user: current_user).empty? %>
+            <div class="card mt-3 p-3">
+              <h5 class="text-primary">Review the Restaurant</h5>
+
+              <%= form_with model: Review.new, url: reviews_path, local: true do |f| %>
+                <%= f.hidden_field :reviewable_type, value: "Restaurant" %>
+                <%= f.hidden_field :reviewable_id, value: 1 %>
+                <%= f.hidden_field :user_id, value: current_user.id %>
+
+                <div class="mb-2">
+                  <%= f.text_area :content, placeholder: "Write your restaurant review...", class: "form-control" %>
+                </div>
+
+                <div class="mb-2">
+                  <%= f.number_field :rating, in: 1..5, placeholder: "Rating", class: "form-control w-25" %>
+                </div>
+
+                <%= f.submit "Submit Restaurant Review", class: "btn btn-primary" %>
+              <% end %>
+            </div>
+          <% else %>
+            <% review = Review.find_by(reviewable_type: "Restaurant", reviewable_id: 1, user: current_user) %>
+            <% if review %>
+              <p class="mt-3"><strong>Your Restaurant Review:</strong> <%= review.content %> (Rating: <%= review.rating %>/5)</p>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <!-- Delete Order -->
+        <div class="mt-3">
+          <%= button_to "Delete Order", customer_order_path(order), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Back to Home -->
+  <%= link_to "← Back to Customer Home", customer_home_path, class: "btn btn-outline-primary mt-3" %>
+</div>
