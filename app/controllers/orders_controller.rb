@@ -15,22 +15,18 @@ class OrdersController < ApplicationController
     @order.update(order_params.merge(status: "placed"))
     redirect_to order_success_path
   end
+  
 
   def success
   end
   def bulk_create
-    cart_items = current_user.cart_items.includes(:menu_item)
+    order = BulkOrderCreator.new(current_user).call
 
-    # Create one order to hold all items
-    order = Order.create(user: current_user, status: "pending")
-
-    cart_items.each do |cart_item|
-      OrderItem.create(order: order, menu_item: cart_item.menu_item, quantity: 1)
+    if order
+      redirect_to edit_order_path(order), notice: "Please choose a payment method to confirm your order."
+    else
+      redirect_to cart_items_path, alert: "Your cart is empty!"
     end
-
-    cart_items.destroy_all
-
-    redirect_to customer_orders_path, notice: "All items booked successfully!"
   end
 
 

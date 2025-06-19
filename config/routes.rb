@@ -1,14 +1,12 @@
 Rails.application.routes.draw do
-  get "restaurant_orders/index"
   root "sessions#new"
-  get "pages/customer_welcome"
-  get "pages/restaurant_welcome"
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
   get "menu_items/search", to: "menu_items#search", as: :search_menu_items
   get "customer/home", to: "pages#customer_home", as: :customer_home
   get "customer/menu", to: "menu_items#customer_index", as: :customer_menu
+
 
 
 
@@ -31,14 +29,6 @@ Rails.application.routes.draw do
   end
   resources :restaurants, only: [:show]
   post "bulk_orders", to: "orders#bulk_create", as: :bulk_orders
-
-
-
-  
-
-
-
-
   resources :menu_items
   resources :cart_items, only: [ :index, :create, :destroy ]
   resources :orders, only: [ :create, :edit, :update ]

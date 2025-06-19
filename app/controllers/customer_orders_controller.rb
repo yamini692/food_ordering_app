@@ -1,7 +1,7 @@
 class CustomerOrdersController < ApplicationController
 
   def index
-    @orders = Order.where(user_id: current_user.id)  # or however you identify customer
+    @orders = Order.where(user_id: current_user.id)
   end
   def destroy
     @order = Order.find(params[:id])

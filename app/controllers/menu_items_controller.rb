@@ -1,6 +1,7 @@
 class MenuItemsController < ApplicationController
   before_action :require_customer, only: [:search]
 
+  
   def index
     @menu_items = current_user.menu_items
   end
@@ -12,7 +13,7 @@ class MenuItemsController < ApplicationController
   def create
     @menu_item = current_user.menu_items.build(menu_item_params)
     if @menu_item.save
-      redirect_to menu_items_path, status: :see_other
+      redirect_to menu_items_path
     else
       render :new
     end
@@ -53,11 +54,6 @@ class MenuItemsController < ApplicationController
     end
   end
   def customer_index
-    if params[:query].present?
-      @menu_items = MenuItem.where("name ILIKE ?", "%#{params[:query]}%").where(available: true)
-    else
-      @menu_items = MenuItem.where(available: true)
-    end
   end
   def reviews
     @menu_item = MenuItem.find(params[:menu_item_id])
