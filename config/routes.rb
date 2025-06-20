@@ -36,5 +36,8 @@ Rails.application.routes.draw do
   resources :menu_items do
     resources :reviews, only: [:index]
   end
+  resources :profiles
+
+
   
 end

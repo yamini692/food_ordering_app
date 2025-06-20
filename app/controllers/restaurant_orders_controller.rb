@@ -4,7 +4,7 @@ class RestaurantOrdersController < ApplicationController
   def index
     @order_items = current_user.menu_items.includes(:unbooked_order_items).flat_map(&:unbooked_order_items)
   end
-
+  
   def book
     @order_item = OrderItem.belonging_to_restaurant(current_user.id).find(params[:id])
     @order_item.update(booked: true)

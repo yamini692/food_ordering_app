@@ -47,12 +47,23 @@ class MenuItemsController < ApplicationController
     end
   end
   def search
+    @categories = Category.all
+
+    @menu_items = MenuItem.includes(:categories)
+
     if params[:query].present?
-      @menu_items = MenuItem.where("name ILIKE ?", "%#{params[:query]}%").where(available: true)
-    else
-      @menu_items = []
+      @menu_items = @menu_items.where("menu_items.name ILIKE ?", "%#{params[:query]}%")
+    end
+
+    if params[:available].present?
+      @menu_items = @menu_items.where(available: params[:available])
+    end
+
+    if params[:category_id].present?
+      @menu_items = @menu_items.joins(:categories).where(categories: { id: params[:category_id] })
     end
   end
+
   def customer_index
   end
   def reviews
@@ -65,18 +76,15 @@ class MenuItemsController < ApplicationController
   private
 
   def menu_item_params
-    params.require(:menu_item).permit(:name, :price, :available, :description)
+    params.require(:menu_item).permit(:name, :price, :description, :available, category_ids: [])
   end
 
   def require_restaurant
     redirect_to root_path unless current_user.is_a?(Restaurant)
   end
-  
+
 
   def require_customer
     redirect_to login_path unless current_user&.customer?
   end
-  
-
 end
-

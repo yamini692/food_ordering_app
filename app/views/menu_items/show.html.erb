@@ -10,6 +10,8 @@
         </span>
       </p>
       <p><strong>Description:</strong><br><%= @menu_item.description %></p>
+      <p>Categories: <%= @menu_item.categories.pluck(:name).join(", ") %></p>
+
 
       <div class="text-center mt-4">
         <%= link_to "← Back to Menu", menu_items_path, class: "btn btn-outline-primary" %>

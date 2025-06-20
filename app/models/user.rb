@@ -3,8 +3,10 @@ class User < ApplicationRecord
 
   has_many :cart_items
   has_many :orders
-  has_many :menu_items 
+  has_many :menu_items
   has_many :reviews, dependent: :destroy
+
+  validates :email, presence: true
 
   before_validation :strip_email
   before_save :downcase_email
@@ -23,9 +25,7 @@ class User < ApplicationRecord
     self.email = email.strip if email.present?
   end
 
-
   def downcase_email
     self.email = email.downcase if email.present?
   end
-
 end

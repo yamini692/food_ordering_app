@@ -16,6 +16,9 @@
               </p>
 
               
+              <%= link_to "View Reviews", menu_item_reviews_path(item), class: "btn btn-outline-info btn-sm" %>
+              <br>
+              
               <%= button_to "Add to Cart", cart_items_path(menu_item_id: item.id), method: :post, class: "btn btn-success me-2" %>
               <br>
               <%= button_to "Book Now", orders_path(menu_item_id: item.id), method: :post, class: "btn btn-primary" %>

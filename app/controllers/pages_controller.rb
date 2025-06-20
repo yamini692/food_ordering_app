@@ -3,8 +3,18 @@ class PagesController < ApplicationController
   before_action :require_login, only: [:customer_home]
 
   def customer_home
-    # renders customer_home.html.erb
+    @categories = Category.all
+    @menu_items = MenuItem.includes(:categories).where(available: true)
+
+    if params[:query].present?
+      @menu_items = @menu_items.where("menu_items.name ILIKE ?", "%#{params[:query]}%")
+    end
+
+    if params[:category_id].present?
+      @menu_items = @menu_items.joins(:categories).where(categories: { id: params[:category_id] })
+    end
   end
+
 
 
   def customer_welcome

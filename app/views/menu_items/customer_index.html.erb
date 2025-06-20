@@ -13,6 +13,7 @@
         <h4><%= item.name %></h4>
         <p>₹<%= item.price %></p>
         <p><%= item.available ? "Available" : "Unavailable" %></p>
+         <%= link_to "View Reviews", menu_item_reviews_path(item), class: "btn btn-outline-info btn-sm" %>
         <%= button_to "Add to Cart", cart_items_path(menu_item_id: item.id), method: :post %>
       </div>
     <% end %>

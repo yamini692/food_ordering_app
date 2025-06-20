@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_18_090344) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_20_101358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_18_090344) do
     t.datetime "updated_at", null: false
     t.index ["menu_item_id"], name: "index_cart_items_on_menu_item_id"
     t.index ["user_id"], name: "index_cart_items_on_user_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "categories_menu_items", id: false, force: :cascade do |t|
+    t.bigint "menu_item_id", null: false
+    t.bigint "category_id", null: false
+    t.index ["category_id"], name: "index_categories_menu_items_on_category_id"
+    t.index ["menu_item_id"], name: "index_categories_menu_items_on_menu_item_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -68,6 +81,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_18_090344) do
     t.bigint "customers_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "bio"
     t.index ["customers_id"], name: "index_profiles_on_customers_id"
   end
 

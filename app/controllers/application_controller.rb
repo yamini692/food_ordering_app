@@ -11,4 +11,9 @@ class ApplicationController < ActionController::Base
       redirect_to login_path
     end
   end
+  def require_customer
+    unless current_user&.customer?
+      redirect_to login_path, alert: "You must be logged in as a customer"
+    end
+  end
 end

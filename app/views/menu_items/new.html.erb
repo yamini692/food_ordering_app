@@ -22,8 +22,20 @@
       <%= f.text_area :description, class: "form-control", rows: 3 %>
     </div>
 
+    <!-- ✅ FIXED SECTION -->
+    <div class="mb-3">
+      <%= f.label :categories, "Select Categories", class: "form-label" %><br>
+      <%= f.collection_check_boxes :category_ids, Category.all, :id, :name do |cb| %>
+        <div class="form-check">
+          <%= cb.check_box(class: "form-check-input") %>
+          <%= cb.label(class: "form-check-label") %>
+        </div>
+      <% end %>
+    </div>
+
     <div class="d-grid">
       <%= f.submit "Add Dish", class: "btn btn-success" %>
     </div>
+
   <% end %>
 </div>

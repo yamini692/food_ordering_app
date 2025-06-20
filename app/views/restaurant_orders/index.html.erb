@@ -17,8 +17,6 @@
           </p>
 
           <div class="d-flex flex-wrap gap-2 mt-3">
-            <%= link_to "Your Reviews", restaurant_path(current_user), class: "btn btn-outline-info" %>
-
             <%= button_to "Mark as Delivered", restaurant_order_path(order_item.order), method: :patch, class: "btn btn-primary", data: { confirm: "Mark this order as Delivered?" } %>
           </div>
         </div>
