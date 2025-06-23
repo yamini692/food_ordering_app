@@ -1,14 +1,22 @@
 class RestaurantOrdersController < ApplicationController
   before_action :require_restaurant
 
-  def index
-    @order_items = current_user.menu_items.includes(:unbooked_order_items).flat_map(&:unbooked_order_items)
-  end
-  
   def book
-    @order_item = OrderItem.belonging_to_restaurant(current_user.id).find(params[:id])
-    @order_item.update(booked: true)
+    @order = Order.find(params[:id])
+    if @order.update(status: "on the way")
+      redirect_to restaurant_orders_path, notice: "Marked as 'Delivery Partner On the Way'"
+    else
+      redirect_to restaurant_orders_path, alert: "Failed to update status."
+    end
   end
+  def index
+    @orders = Order
+      .joins(:menu_item)
+      .where(menu_items: { user_id: current_user.id })
+      .where.not(status: ['delivered', 'cancelled','pending']) # 👈 filter delivered & cancelled
+      .order(created_at: :desc)
+  end
+
   def update
     @order = Order.find(params[:id])
     if @order.update(status: "delivered")
@@ -17,6 +25,7 @@ class RestaurantOrdersController < ApplicationController
       redirect_to restaurant_orders_path, alert: "Failed to update order."
     end
   end
+
   private
 
   def require_restaurant

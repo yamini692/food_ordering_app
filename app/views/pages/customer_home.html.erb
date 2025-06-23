@@ -1,5 +1,15 @@
 <div class="container mt-4">
   <h2 class="mb-4 text-center">Customer Dashboard</h2>
+  <!-- Info Button Section -->
+  <div class="d-flex justify-content-end mb-3">
+    <% if current_user.reload.info.present? %>
+      <%= link_to "Info", info_path(current_user.info), class: "btn btn-outline-dark" %>
+    <% else %>
+      <%= link_to "Add Info", new_info_path, class: "btn btn-outline-primary" %>
+    <% end %>
+  </div>
+
+
 
   <!-- Action buttons -->
   <div class="d-flex justify-content-center gap-3 mb-4">
@@ -38,7 +48,7 @@
 
   <!-- Results -->
   <% if @menu_items.present? %>
-    <h3 class="mb-3">Search Results:</h3>
+    <h3 class="mb-3">AVAILABLE FOODS:</h3>
     <div class="row">
       <% @menu_items.each do |item| %>
         <div class="col-md-4">

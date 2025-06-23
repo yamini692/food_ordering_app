@@ -16,6 +16,21 @@
   <% else %>
     <p class="text-muted">No restaurant reviews yet.</p>
   <% end %>
+  <% if @order_reviews.present? %>
+    <h4 class="text-warning mt-5 mb-3">Order Reviews</h4>
+    <% @order_reviews.each do |review| %>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <p><strong>Review:</strong> <%= review.content %></p>
+          <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+          <p class="text-muted"><em>By: <%= review.user.name %></em></p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-muted">No order reviews yet.</p>
+  <% end %>
+
 
   <% if @menu_reviews.present? %>
     <h4 class="text-info mt-5 mb-3">Menu Item Reviews</h4>

@@ -1,13 +1,14 @@
 class ReviewsController < ApplicationController
   
   def create
+
     @review = Review.new(review_params)
+    @review.user = current_user  # ✅ Set current user manually
 
     if @review.save
       redirect_back fallback_location: customer_orders_path, notice: "Review submitted!"
     else
-      Rails.logger.error "Review not saved: #{@review.errors.full_messages}"
-      redirect_back fallback_location: customer_orders_path, alert: "Failed: #{@review.errors.full_messages.join(', ')}"
+      redirect_back fallback_location: customer_orders_path, alert: @review.errors.full_messages.to_sentence
     end
   end
 
@@ -23,7 +24,7 @@ class ReviewsController < ApplicationController
   private
 
   def review_params
-    params.require(:review).permit(:content, :rating, :user_id, :reviewable_id, :reviewable_type)
+    params.require(:review).permit(:content, :rating, :user_id, :reviewable_id, :reviewable_type, :order_id)
   end
 
 end

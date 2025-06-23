@@ -1,10 +1,26 @@
 class OrdersController < ApplicationController
   # orders_controller.rb
   def create
-    @order = current_user.orders.create(payment_method: nil, status: "pending")
-    @order.order_items.create(menu_item_id: params[:menu_item_id], quantity: 1)
-    redirect_to edit_order_path(@order)
+    if current_user&.persisted?
+      menu_item = MenuItem.find(params[:menu_item_id])
+
+      @order = current_user.orders.new(
+        menu_item: menu_item,
+        payment_method: "cash_on_delivery",  # adjust this as needed
+        status: "pending"                    # match this to allowed statuses
+      )
+
+      if @order.save
+        redirect_to edit_order_path(@order), notice: "Order created. Please complete payment."
+      else
+        Rails.logger.error("Order save failed: #{@order.errors.full_messages.join(', ')}")
+        redirect_to customer_home_path, alert: "Order failed: #{@order.errors.full_messages.join(', ')}"
+      end
+    else
+      redirect_to menu_items_path, alert: "User is not logged in or not saved."
+    end
   end
+
 
   def edit
     @order = current_user.orders.find(params[:id])
@@ -15,7 +31,7 @@ class OrdersController < ApplicationController
     @order.update(order_params.merge(status: "placed"))
     redirect_to order_success_path
   end
-  
+
 
   def success
   end
@@ -34,7 +50,7 @@ class OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:payment_method)
+    params.require(:order).permit(:quantity, :payment_method)
   end
 
 end

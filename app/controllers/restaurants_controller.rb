@@ -6,5 +6,6 @@ class RestaurantsController < ApplicationController
   def reviews
     @restaurant_reviews = Review.where(reviewable_type: "Restaurant", reviewable_id: current_user.id)
     @menu_reviews = Review.where(reviewable_type: "MenuItem")
+    @order_reviews = Review.where(reviewable_type: "Order")
   end
 end

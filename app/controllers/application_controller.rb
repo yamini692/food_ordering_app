@@ -1,19 +1,18 @@
 class ApplicationController < ActionController::Base
-  helper_method :current_user
+  # Devise provides current_user, no need to redefine it
+  before_action :authenticate_user!
 
-  def current_user
-    @current_user ||= User.find_by(id: session[:user_id])
-  end
-
-  def require_login
-    unless current_user
-      flash[:alert] = "You must log in first."
-      redirect_to login_path
+  # Optional: check customer role
+  def require_customer
+    unless current_user&.role == "Customer"
+      redirect_to new_user_session_path, alert: "You must be logged in as a customer"
     end
   end
-  def require_customer
-    unless current_user&.customer?
-      redirect_to login_path, alert: "You must be logged in as a customer"
+
+  # Optional: check restaurant role
+  def require_restaurant
+    unless current_user&.role == "Restaurant"
+      redirect_to new_user_session_path, alert: "You must be logged in as a restaurant"
     end
   end
 end

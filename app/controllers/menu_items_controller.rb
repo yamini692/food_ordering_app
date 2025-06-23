@@ -12,12 +12,14 @@ class MenuItemsController < ApplicationController
 
   def create
     @menu_item = current_user.menu_items.build(menu_item_params)
+
     if @menu_item.save
-      redirect_to menu_items_path
+      redirect_to menu_items_path, notice: "Menu item created successfully."
     else
       render :new
     end
   end
+
 
   def show
     if current_user.is_a?(Restaurant)

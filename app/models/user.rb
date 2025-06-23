@@ -1,10 +1,21 @@
 class User < ApplicationRecord
-  has_secure_password
-
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true, format: URI::MailTo::EMAIL_REGEXP
+  validates :role, inclusion: { in: ["Customer", "Restaurant"] }
+  
   has_many :cart_items
   has_many :orders
-  has_many :menu_items
+  has_many :menu_items, foreign_key: "user_id"
+  has_many :received_orders, through: :menu_items, source: :orders
+
   has_many :reviews, dependent: :destroy
+  has_one :info, dependent: :destroy
+  accepts_nested_attributes_for :info
+
 
   validates :email, presence: true
 

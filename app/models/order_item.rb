@@ -1,4 +1,7 @@
 class OrderItem < ApplicationRecord
+  validates :quantity, presence: true, numericality: { greater_than: 0 }
+  validates :booked, inclusion: { in: [true, false] }
+
   belongs_to :order
   belongs_to :menu_item
   scope :unbooked, -> {

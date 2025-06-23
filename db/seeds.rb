@@ -1,13 +1,15 @@
-Customer.create(
-  name: "yamini",
-  email: "yamini@example.com",
-  password: "123456",
-  password_confirmation: "123456"
+User.create!(
+  name: "Yamini",
+  email: "yaminir@example.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: "Customer"
 )
 
-Restaurant.create(
-  name: "hut",
-  email: "pizza@example.com",
-  password: "123456",
-  password_confirmation: "123456"
+User.create!(
+  name: "Admin",
+  email: "admin@example.com",
+  password: "admin123",
+  password_confirmation: "admin123",
+  role: "Restaurant"
 )

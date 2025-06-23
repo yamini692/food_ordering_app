@@ -1,12 +1,12 @@
 class SessionsController < ApplicationController
+   skip_before_action :authenticate_user!, only: [:new, :create]
   def new
   end
-
   def create
     user = User.find_by(email: params[:email])
 
-    if user && user.authenticate(params[:password])
-      session[:user_id] =user.id
+    if user && user.valid_password?(params[:password])
+      sign_in(user)  # ✅ Devise method
 
       if user.role == "Restaurant"
         redirect_to restaurant_welcome_path
@@ -21,8 +21,10 @@ class SessionsController < ApplicationController
     end
   end
 
-  def destroy
-    session[:user_id] = nil
-    redirect_to login_path, notice: "Logged out!"
-  end
+
+def destroy
+  sign_out(current_user)
+  redirect_to login_path, notice: "Logged out!"
+end
+  
 end
