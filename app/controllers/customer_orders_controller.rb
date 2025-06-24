@@ -1,15 +1,8 @@
 class CustomerOrdersController < ApplicationController
-
+  before_action :authenticate_user!, only: [:index]
   def index
     @orders = current_user.orders.includes(:menu_item).not_deleted
   end
-
-  def api_index
-    orders = current_user.orders.includes(:menu_item)
-    render json: orders.as_json(include: { menu_item: { only: [:name, :price] } }, only: [:id, :status, :quantity])
-  end
-
-
   def destroy
     @order = current_user.orders.find_by(id: params[:id])
 

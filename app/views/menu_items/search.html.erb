@@ -2,7 +2,7 @@
   <h2 class="text-center mb-4">Search Results</h2>
 
   <% if @menu_items.any? %>
-    <div class="row">
+    <div clas="row">
       <% @menu_items.each do |item| %>
         <div class="col-md-4 mb-4">
           <div class="card shadow-sm h-100">
@@ -21,7 +21,8 @@
               
               <%= button_to "Add to Cart", cart_items_path(menu_item_id: item.id), method: :post, class: "btn btn-success me-2" %>
               <br>
-              <%= button_to "Book Now", orders_path(menu_item_id: item.id), method: :post, class: "btn btn-primary" %>
+              <%= button_to "Book Now", book_orders_path(menu_item_id: item.id), method: :post, form: { data: { turbo: false } }, class: "btn btn-primary" %>
+
             </div>
           </div>
         </div>

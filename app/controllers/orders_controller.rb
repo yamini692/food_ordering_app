@@ -1,5 +1,6 @@
 class OrdersController < ApplicationController
   # orders_controller.rb
+  before_action :authenticate_user!, only: [:create, :book]
   def create
     if current_user&.persisted?
       menu_item = MenuItem.find(params[:menu_item_id])
@@ -20,6 +21,28 @@ class OrdersController < ApplicationController
       redirect_to menu_items_path, alert: "User is not logged in or not saved."
     end
   end
+  def book
+      puts "=== BOOK action called ==="
+      puts "Params: #{params.inspect}"
+
+      menu_item = MenuItem.find(params[:menu_item_id])
+      puts "MenuItem found: #{menu_item.id}"
+
+      @order = current_user.orders.new(
+        menu_item: menu_item,
+        payment_method: "cash_on_delivery",
+        status: "pending"
+      )
+
+      if @order.save
+        puts "Order saved successfully: #{@order.id}"
+        redirect_to edit_order_path(@order), notice: "Order created. Please complete payment."
+      else
+        puts "Order save failed: #{@order.errors.full_messages.join(', ')}"
+        redirect_to customer_home_path, alert: "Order failed: #{@order.errors.full_messages.join(', ')}"
+      end
+  end
+
 
 
   def edit

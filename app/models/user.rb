@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_one :info, dependent: :destroy
   accepts_nested_attributes_for :info
+  
 
 
   validates :email, presence: true

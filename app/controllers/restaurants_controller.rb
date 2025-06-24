@@ -1,4 +1,6 @@
 class RestaurantsController < ApplicationController
+  before_action :authenticate_user!, only: [:show]  # Remove :new
+
   def show
     @reviews = Review.where(reviewable: current_user)
 

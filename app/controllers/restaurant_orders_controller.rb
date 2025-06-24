@@ -1,5 +1,8 @@
 class RestaurantOrdersController < ApplicationController
   before_action :require_restaurant
+  before_action :authenticate_user!, only: [:index]  # remove :new
+  def new
+  end
 
   def book
     @order = Order.find(params[:id])

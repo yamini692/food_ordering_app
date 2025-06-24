@@ -1,6 +1,6 @@
 class MenuItemsController < ApplicationController
   before_action :require_customer, only: [:search]
-
+  before_action :authenticate_user!, only: [:create, :index, :destroy]
   
   def index
     @menu_items = current_user.menu_items
@@ -31,9 +31,11 @@ class MenuItemsController < ApplicationController
 
 
   def destroy
-    @menu_item = current_user.menu_items.find(params[:id])
+    @menu_item = MenuItem.find(params[:id])
+    @menu_item.orders.each do |order|
+      order.review.destroy if order.review.present?
+    end
     @menu_item.destroy
-    redirect_to menu_items_path, notice: "Dish deleted successfully!"
   end
   def edit
     @menu_item = MenuItem.find(params[:id])

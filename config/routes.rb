@@ -1,14 +1,29 @@
 Rails.application.routes.draw do
+  
   use_doorkeeper
-  root to: "sessions#new"
+  # config/routes.rb
 
-  devise_for :users, skip: [:sessions]
 
-  as :user do
-    get    'login',  to: 'sessions#new',     as: :new_user_session
-    post   'login',  to: 'sessions#create',  as: :user_session
-    delete 'logout', to: 'sessions#destroy', as: :destroy_user_session
+  root to: "homes#home"
+  devise_for :users, controllers: {
+  registrations: 'users/registrations',
+  sessions: 'users/sessions'
+}
+
+  # Custom registration routes
+   devise_scope :user do
+    get 'users/sign_up/customer', to: 'users/registrations#new', defaults: { role: 'Customer' }, as: :new_customer_registration
+    get 'users/sign_up/restaurant', to: 'users/registrations#new', defaults: { role: 'Restaurant' }, as: :new_restaurant_registration
   end
+
+
+
+
+  # as :user do
+  #   get    'login',  to: 'sessions#new',     as: :new_user_session
+  #   post   'login',  to: 'sessions#create',  as: :user_session
+  #   delete 'logout', to: 'sessions#destroy', as: :destroy_user_session
+  # end
   get "menu_items/search", to: "menu_items#search", as: :search_menu_items
   get "customer/home", to: "pages#customer_home", as: :customer_home
   get "customer/menu", to: "menu_items#customer_index", as: :customer_menu
@@ -42,7 +57,10 @@ Rails.application.routes.draw do
   post "bulk_orders", to: "orders#bulk_create", as: :bulk_orders
   resources :menu_items
   resources :cart_items, only: [ :index, :create, :destroy ]
-  resources :orders, only: [ :create, :edit, :update ]
+  resources :orders, only: [:create, :edit, :update] do
+    post :book, on: :collection
+  end
+
   get "order/success", to: "orders#success", as: :order_success
   resources :menu_items do
     resources :reviews, only: [:index]
@@ -52,9 +70,22 @@ Rails.application.routes.draw do
   resources :orders do
   resources :reviews, only: [:edit, :update]
 end
+  # namespace :api do
+  #   resources :customer_orders, only: [:index]
+  # end
+  # config/routes.rb
   namespace :api do
-    get 'customer_orders', to: 'customer_orders#api_index'
+    resources :orders, only: [:create]
   end
+  namespace :api do
+    resources :menu_items, only: [:index, :show, :create, :update, :destroy] do
+      collection do
+        get :top_rated
+      end
+    end
+  end
+
+
 
   #get "/api/customer_orders", to: "customer_orders#api_index"
 

@@ -5,6 +5,7 @@
     <%= link_to "Add Dish", new_menu_item_path, class: "btn btn-success" %>
     <%= link_to "Your Orders", restaurant_orders_path, class: "btn btn-info" %>
     <%= link_to "View Restaurant Reviews", restaurant_reviews_path, class: "btn btn-outline-info" %>
+    <%= link_to "Logout", destroy_user_session_path, class: "btn btn-outline-primary",method: :delete, data: { confirm: "Are you sure?", turbo: false } %>  
   </div>
 
   <div class="row">

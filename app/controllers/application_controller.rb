@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   # Devise provides current_user, no need to redefine it
   before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:new, :create]
+
 
   # Optional: check customer role
   def require_customer

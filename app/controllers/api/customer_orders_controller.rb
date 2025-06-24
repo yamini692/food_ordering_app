@@ -1,22 +1,12 @@
 module Api
-  class CustomerOrdersController < ApplicationController
+  class CustomerOrdersController < ActionController::API
     before_action :doorkeeper_authorize!
 
-    # Fetch the user from the access token
-    def current_user
-      @current_user ||= User.find_by(id: doorkeeper_token[:resource_owner_id])
-    end
+    def index
+      user = User.find(doorkeeper_token.resource_owner_id)
+      orders = user.orders.includes(:menu_item)
 
-    def api_index
-      if current_user
-        orders = current_user.orders.includes(:menu_item)
-        render json: orders.as_json(
-          include: { menu_item: { only: [:name, :price] } },
-          only: [:id, :status, :quantity]
-        )
-      else
-        render json: { error: "Unauthorized" }, status: :unauthorized
-      end
+      render json: orders
     end
   end
 end

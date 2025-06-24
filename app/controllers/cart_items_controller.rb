@@ -1,4 +1,5 @@
 class CartItemsController < ApplicationController
+  before_action :authenticate_user!, only: [:create, :index, :destroy]
   def create
     current_user.cart_items.create(menu_item_id: params[:menu_item_id])
     redirect_to cart_items_path, notice: "Item added to cart!"

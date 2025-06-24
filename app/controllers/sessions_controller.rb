@@ -1,12 +1,12 @@
 class SessionsController < ApplicationController
-   skip_before_action :authenticate_user!, only: [:new, :create]
+  skip_before_action :authenticate_user!, only: [:new, :create]
   def new
   end
   def create
     user = User.find_by(email: params[:email])
 
     if user && user.valid_password?(params[:password])
-      sign_in(user)  # ✅ Devise method
+      sign_in(user)  
 
       if user.role == "Restaurant"
         redirect_to restaurant_welcome_path
